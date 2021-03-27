@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8506eb15d31701d43a5e7363f8ab814e, type: 3}
+  m_Name: ColorPalette_CAP
+  m_EditorClassIdentifier: 
+  backgroundColor: {r: 0.74509805, g: 0.60784316, b: 0.48235297, a: 1}
+  platformColor: {r: 0.29411766, g: 0.21960786, b: 0.19607845, a: 1}
+  scarfColor: {r: 1, g: 0.9568628, b: 0.90196085, a: 1}
+  playerColor: {r: 0.52156866, g: 0.26666668, b: 0.25882354, a: 1}
