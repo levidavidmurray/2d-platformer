@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8506eb15d31701d43a5e7363f8ab814e, type: 3}
-  m_Name: ColorPalette_CAP
+  m_Name: ColorPalette_CAP 1
   m_EditorClassIdentifier: 
   backgroundColor: {r: 0.74509805, g: 0.60784316, b: 0.48235297, a: 1}
   platformColor: {r: 0.29411766, g: 0.21960786, b: 0.19607845, a: 1}
