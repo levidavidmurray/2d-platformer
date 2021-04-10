@@ -9,6 +9,7 @@ public class PlayerInAirState : PlayerState
     private int xInput;
     private bool jumpInput;
     private bool jumpInputStop;
+    private bool dashInput;
     private bool grabInput;
 
     // Checks
@@ -78,12 +79,14 @@ public class PlayerInAirState : PlayerState
         xInput = player.InputHandler.NormInputX;
         jumpInput = player.InputHandler.JumpInput;
         jumpInputStop = player.InputHandler.JumpInputStop;
+        dashInput = player.InputHandler.DashInput;
         grabInput = player.InputHandler.GrabInput;
 
         CheckJumpMultiplier();
 
         if (isGrounded && player.CurrentVelocity.y < 0.01f)
         {
+            player.DashState.ResetCanDash();
             stateMachine.ChangeState(player.LandState);
         }
         else if (isTouchingWall && !isTouchingLedge && !isGrounded)
@@ -100,6 +103,10 @@ public class PlayerInAirState : PlayerState
         else if (jumpInput && player.JumpState.CanJump())
         {
             stateMachine.ChangeState(player.JumpState);
+        }
+        else if (dashInput && player.DashState.CanDash)
+        {
+            stateMachine.ChangeState(player.DashState);
         }
         else if (isTouchingWall && grabInput && isTouchingLedge)
         {

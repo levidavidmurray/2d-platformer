@@ -32,11 +32,11 @@ public class PlayerMoveState : PlayerGroundedState
     {
         base.LogicUpdate();
 
+        if (isExitingState) return;
+
         player.CheckIfShouldFlip(xInput);
 
         player.SetVelocityX(playerData.movementVelocity * xInput);
-
-        if (isExitingState) return;
 
         if (xInput == 0f)
         {

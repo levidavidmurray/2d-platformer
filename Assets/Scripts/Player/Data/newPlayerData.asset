@@ -15,12 +15,15 @@ MonoBehaviour:
   movementVelocity: 7.58
   jumpVelocity: 15
   amountOfJumps: 1
+  dashVelocity: 30
+  dashTime: 0.1
+  dashCooldown: 0.46
   wallJumpVelocity: 15
   wallJumpTime: 0.2
   wallJumpAngle: {x: 1, y: 1.15}
   coyoteTime: 0.1
   variableJumpHeightMultiplier: 0.3
-  wallSlideVelocity: 3
+  wallSlideVelocity: 0.5
   wallClimbVelocity: 3
   startOffset: {x: 0, y: 0.15}
   stopOffset: {x: 0.3, y: 0.5}

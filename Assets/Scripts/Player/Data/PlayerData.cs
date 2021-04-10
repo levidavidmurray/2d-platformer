@@ -12,6 +12,11 @@ public class PlayerData : ScriptableObject
     public float jumpVelocity = 15f;
     public int amountOfJumps = 2;
 
+    [Header("Dash State")]
+    public float dashVelocity = 20f;
+    public float dashTime = 0.5f;
+    public float dashCooldown = 0.5f;
+
     [Header("Wall Jump State")]
     public float wallJumpVelocity = 20f;
     public float wallJumpTime = 0.4f; // Time to stay in wallJump state to prevent moving back to wall
