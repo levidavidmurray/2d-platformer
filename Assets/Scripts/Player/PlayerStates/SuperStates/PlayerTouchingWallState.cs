@@ -40,7 +40,7 @@ public class PlayerTouchingWallState : PlayerState
 
         if (isTouchingWall && !isTouchingLedge)
         {
-            player.LedgeClimbState.SetDetectedPos(player.transform.position);
+            player.LedgeClimbState?.SetDetectedPos(player.transform.position);
         }
     }
 

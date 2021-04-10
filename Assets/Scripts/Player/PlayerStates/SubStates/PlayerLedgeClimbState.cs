@@ -11,6 +11,7 @@ public class PlayerLedgeClimbState : PlayerState
 
     private bool isHanging;
     private bool isClimbing;
+    private bool jumpInput;
 
     private int xInput;
     private int yInput;
@@ -25,7 +26,6 @@ public class PlayerLedgeClimbState : PlayerState
     public override void AnimationFinishTrigger()
     {
         base.AnimationFinishTrigger();
-
         player.Anim.SetBool("climbLedge", false);
     }
 
@@ -80,6 +80,7 @@ public class PlayerLedgeClimbState : PlayerState
         {
             xInput = player.InputHandler.NormInputX;
             yInput = player.InputHandler.NormInputY;
+            jumpInput = player.InputHandler.JumpInput;
 
             player.FreezeVelocity();
             player.transform.position = startPos;
@@ -92,6 +93,11 @@ public class PlayerLedgeClimbState : PlayerState
             else if (yInput == -1 && isHanging && !isClimbing)
             {
                 stateMachine.ChangeState(player.InAirState);
+            }
+            else if (jumpInput && !isClimbing)
+            {
+                player.WallJumpState?.DetermineWallJumpDirection(true);
+                stateMachine.ChangeState(player.WallJumpState);
             }
 
         }
