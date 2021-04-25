@@ -16,6 +16,14 @@ public class PlayerData : ScriptableObject
     public float dashVelocity = 20f;
     public float dashTime = 0.5f;
     public float dashCooldown = 0.5f;
+    public bool hasAfterImage = true;
+    public bool hasTrail = true;
+    public float distBetweenAfterImages = 0.5f;
+    public float afterImageAlphaSet = 0.8f;
+    public float afterImageAlphaDecay = 0.85f;
+    [Header("Dash SFX")]
+    public float dashDelayForSfx = 0.2f;
+    public float dashSfxVolume = 0.65f;
 
     [Header("Wall Jump State")]
     public float wallJumpVelocity = 20f;

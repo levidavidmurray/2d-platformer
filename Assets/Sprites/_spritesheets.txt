@@ -1,0 +1,1 @@
+baghead_run.png,512,512,10

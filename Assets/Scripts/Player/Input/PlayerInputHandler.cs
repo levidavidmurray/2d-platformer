@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DarkTonic.MasterAudio;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GrabInput { get; private set; }
     public bool DashInput { get; private set; }
     public bool DashInputStop { get; private set; }
+
+    public PlayerColorManager ColorManager;
 
     [SerializeField]
     private float inputHoldTime = 0.2f;
@@ -72,6 +75,22 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.canceled)
         {
             GrabInput = false;
+        }
+    }
+
+    public void OnPaletteRight(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            ColorManager.UpdateForward();
+        }
+    }
+
+    public void OnPaletteLeft(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            ColorManager.UpdateBackward();
         }
     }
 
