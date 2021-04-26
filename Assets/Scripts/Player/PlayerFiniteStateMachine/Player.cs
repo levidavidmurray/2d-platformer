@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public static class GameTrigger
+{
+    public const string DEATH_COLLIDER = "DeathCollider";
+    public const string SPAWN_POINT = "SpawnPoint";
+}
+
 public class Player : MonoBehaviour
 {
     #region State Variables
@@ -19,6 +25,7 @@ public class Player : MonoBehaviour
     public PlayerWallClimbState WallClimbState { get; private set; }
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerLedgeClimbState LedgeClimbState { get; private set; }
+    public PlayerDeadState DeadState { get; private set; }
 
     [SerializeField]
     private PlayerData playerData;
@@ -28,12 +35,15 @@ public class Player : MonoBehaviour
     public Animator Anim { get; private set; }
     public PlayerInputHandler InputHandler { get; private set; }
     public Rigidbody2D RB { get; private set; }
+    public SpriteRenderer Sprite { get; private set; }
     public TrailRenderer Trail { get; private set; }
     #endregion
 
     #region Other Variables
     public Vector2 CurrentVelocity { get; private set; }
     public int FacingDirection { get; private set; }
+
+    public Transform spawnPoint;
 
     private Vector2 workspace;
     #endregion
@@ -63,6 +73,8 @@ public class Player : MonoBehaviour
         WallGrabState = new PlayerWallGrabState(this, StateMachine, playerData, "wallGrab");
         WallClimbState = new PlayerWallClimbState(this, StateMachine, playerData, "wallClimb");
         WallJumpState = new PlayerWallJumpState(this, StateMachine, playerData, "inAir");
+        DeadState = new PlayerDeadState(this, StateMachine, playerData, "idle");
+
         // LedgeClimbState = new PlayerLedgeClimbState(this, StateMachine, playerData, "ledgeClimbState");
     }
 
@@ -71,6 +83,7 @@ public class Player : MonoBehaviour
         Anim = GetComponent<Animator>();
         InputHandler = GetComponent<PlayerInputHandler>();
         RB = GetComponent<Rigidbody2D>();
+        Sprite = GetComponent<SpriteRenderer>();
         Trail = GetComponentInChildren<TrailRenderer>();
 
         Trail.emitting = false;
@@ -94,9 +107,14 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.CompareTag("DeathCollider"))
+        switch(col.tag)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            case GameTrigger.DEATH_COLLIDER:
+                StateMachine.CurrentState.Die();
+                break;
+            case GameTrigger.SPAWN_POINT:
+                spawnPoint = col.transform;
+                break;
         }
     }
 

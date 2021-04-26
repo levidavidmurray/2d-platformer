@@ -12,9 +12,10 @@ public class PlayerColorManager : MonoBehaviour
     public ColorPalette colorPalette;
 
     [Header("Materials")]
-    public Material platformMat;
-    public Material playerMat;
-    public Material backgroundMat;
+    public Material color1_Mat;
+    public Material color2_Mat;
+    public Material color3_Mat;
+    public Material color4_Mat;
 
     [Header("GameObjects")]
     public Light2D playerLight;
@@ -95,24 +96,29 @@ public class PlayerColorManager : MonoBehaviour
 
         if (playerLight)
         {
-            playerLight.color = colorPalette.playerColor;
+            playerLight.color = colorPalette.color1;
             playerLight.intensity = colorPalette.playerLightIntensity;
             playerLight.shadowIntensity = colorPalette.playerLightShadowIntensity;
         }
 
-        if (playerMat)
+        if (color1_Mat)
         {
-            playerMat.SetColor("_Color", colorPalette.playerColor);
+            color1_Mat.SetColor("_Color", colorPalette.color1);
         }
 
-        if (backgroundMat)
+        if (color2_Mat)
         {
-            backgroundMat.SetColor("_Color", colorPalette.backgroundColor);
+            color2_Mat.SetColor("_Color", colorPalette.color2);
         }
 
-        if (platformMat)
+        if (color3_Mat)
         {
-            platformMat.SetColor("_Color", colorPalette.platformColor);
+            color3_Mat.SetColor("_Color", colorPalette.color3);
+        }
+
+        if (color4_Mat)
+        {
+            color4_Mat.SetColor("_Color", colorPalette.color4);
         }
 
     }

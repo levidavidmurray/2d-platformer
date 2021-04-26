@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8506eb15d31701d43a5e7363f8ab814e, type: 3}
   m_Name: ColorPalette_LEVEL_3
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 0.29411766, g: 0.5254902, b: 0.7058824, a: 1}
-  platformColor: {r: 0.16470589, g: 0.3019608, b: 0.41176474, a: 1}
-  playerColor: {r: 0.9058824, g: 0.93725497, b: 0.96470594, a: 1}
+  color1: {r: 0.9058824, g: 0.93725497, b: 0.96470594, a: 1}
+  color2: {r: 0.29411766, g: 0.5254902, b: 0.7058824, a: 1}
+  color3: {r: 0.16470589, g: 0.3019608, b: 0.41176474, a: 1}
+  color4: {r: 0.9411765, g: 0.64692706, b: 0.36470586, a: 1}
   playerLightIntensity: 0.4
   playerLightShadowIntensity: 0.3

@@ -27,6 +27,11 @@ public class PlayerState
         this.animBoolName = animBoolName;
     }
 
+    public virtual void Die()
+    {
+        stateMachine.ChangeState(player.DeadState);
+    }
+
     // Enter State
     public virtual void Enter()
     {

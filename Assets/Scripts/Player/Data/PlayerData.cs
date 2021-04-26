@@ -48,4 +48,9 @@ public class PlayerData : ScriptableObject
     public float groundCheckRadius = 0.3f;
     public float wallCheckDistance = 0.5f;
     public LayerMask groundLayer;
+
+    [Header("Death State")]
+    public float deathResetDelay = 1.5f;
+    public GameObject deathParticlesPrefab;
+    public Vector2 deathParticlesOffset;
 }

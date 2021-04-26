@@ -4,6 +4,7 @@ Shader "Hidden/ProCamera2D/TransitionsFX/Circle"
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_Step ("Step", Range(0, 1)) = 0
+		_RenderPaintTexture ("Render Texture", 2D) = "white" {}
         _BackgroundColor ("Background Color", Color) = (0, 0, 0, 1)
 	}
 	SubShader
@@ -40,6 +41,7 @@ Shader "Hidden/ProCamera2D/TransitionsFX/Circle"
 			}
 
             sampler2D _MainTex;
+			sampler2D _RenderPaintTexture;
             float _Step;
             float4 _BackgroundColor;
 
@@ -47,10 +49,11 @@ Shader "Hidden/ProCamera2D/TransitionsFX/Circle"
             {
                 fixed4 colour = _BackgroundColor;
                 float aspectRatio = _ScreenParams.y / _ScreenParams.x;
-                if (sqrt((float)(pow(i.uv.x - 0.5, 2) + pow((i.uv.y - 0.5) * aspectRatio, 2) < 0.5 - (_Step / 2))))
-                    colour = tex2D(_MainTex, i.uv);
+                // if (sqrt((float)(pow(i.uv.x - 0.5, 2) + pow((i.uv.y - 0.5) * aspectRatio, 2) < 0.5 - (_Step / 2))))
+                //     colour = tex2D(_MainTex, i.uv);
                 
-                return colour;
+                // return colour;
+				return tex2D(_MainTex, i.uv);
             }
 
             ENDCG

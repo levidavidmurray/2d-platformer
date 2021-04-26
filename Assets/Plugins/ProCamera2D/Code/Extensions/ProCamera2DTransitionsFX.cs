@@ -103,7 +103,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
         Material _transitionEnterMaterial;
         Material _transitionExitMaterial;
 
-        BasicBlit _blit;
+        URPBasicBlit _blit;
 
         int _material_StepID;
         int _material_BackgroundColorID;
@@ -120,7 +120,7 @@ namespace Com.LuisPedroFonseca.ProCamera2D
             _material_StepID = Shader.PropertyToID("_Step");
             _material_BackgroundColorID = Shader.PropertyToID("_BackgroundColor");
 
-            _blit = gameObject.AddComponent<BasicBlit>();
+            _blit = gameObject.AddComponent<URPBasicBlit>();
             _blit.enabled = false;
 
             UpdateTransitionsShaders();
