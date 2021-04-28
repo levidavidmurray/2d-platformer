@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Com.LuisPedroFonseca.ProCamera2D;
 
 public class PlayerDeadState : PlayerState
 {
@@ -18,7 +19,14 @@ public class PlayerDeadState : PlayerState
         deathStartedAt = Time.time;
         player.Sprite.forceRenderingOff = true;
 
+        ProCamera2DShake.Instance.Shake("PlayerHit");
+
         GameObject.Instantiate(playerData.deathParticlesPrefab, player.transform.position, Quaternion.identity);
+        UIManager.TransitionUI.swipeInOut(
+            playerData.deathResetTransitionDuration, 
+            playerData.deathResetTransitionDelay,
+            playerData.deathResetTransitionHoldTime
+        );
     }
 
     public override void Exit()
@@ -34,14 +42,23 @@ public class PlayerDeadState : PlayerState
         if (Time.time - deathStartedAt >= playerData.deathResetDelay)
         {
             player.transform.position = player.spawnPoint.position;
+
+            if (Time.time - deathStartedAt >= playerData.respawnDelay)
+            {
+                this.SpawnPlayer();
+            }
         }
     }
 
-    public void ResetLevel()
+    public void SpawnPlayer()
     {
-
+        player.Sprite.forceRenderingOff = false;
+        stateMachine.ChangeState(player.IdleState);
     }
 
-
+    public override void Die()
+    {
+        // Already Dead
+    }
 
 }

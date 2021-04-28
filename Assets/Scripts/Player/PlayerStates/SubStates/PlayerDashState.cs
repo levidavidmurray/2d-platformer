@@ -36,7 +36,7 @@ public class PlayerDashState : PlayerAbilityState
         player.InputHandler.UseDashInput();
         player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
-        ProCamera2DShake.Instance.Shake(0);
+        ProCamera2DShake.Instance.Shake("GunShot");
 
         if (playerData.hasAfterImage) PlaceAfterImage();
     }
@@ -44,6 +44,8 @@ public class PlayerDashState : PlayerAbilityState
     public override void Exit()
     {
         base.Exit();
+
+        player.Trail.emitting = false;
     }
 
     public override void LogicUpdate()

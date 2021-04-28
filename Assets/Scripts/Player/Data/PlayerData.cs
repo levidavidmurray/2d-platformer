@@ -50,7 +50,11 @@ public class PlayerData : ScriptableObject
     public LayerMask groundLayer;
 
     [Header("Death State")]
-    public float deathResetDelay = 1.5f;
+    public float deathResetDelay = 0.5f; // How long to wait before resetting player
+    public float deathResetTransitionDuration = 1f; // Duration of transition tween
+    public float deathResetTransitionHoldTime = 0.75f; // How long to hold black screen
+    public float deathResetTransitionDelay = 0.25f; // How long to wait before transitioning
+    public float respawnDelay = 3f; // How long to wait to respawn after transitioning to spawn point
     public GameObject deathParticlesPrefab;
     public Vector2 deathParticlesOffset;
 }

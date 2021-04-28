@@ -39,3 +39,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  deathResetDelay: 0.9
+  deathResetTransitionDuration: 0.75
+  deathResetTransitionHoldTime: 0.75
+  deathResetTransitionDelay: 0.25
+  respawnDelay: 3
+  deathParticlesPrefab: {fileID: 4219996338740997663, guid: 242baa73e1500db42befeb11b4d535d1, type: 3}
+  deathParticlesOffset: {x: 0, y: 0}
