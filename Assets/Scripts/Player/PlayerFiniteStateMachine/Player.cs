@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
     {
         CurrentVelocity = RB.velocity;
         UIManager.DebugUI.OnPlayerVelocityChange(CurrentVelocity);
-        StateMachine.CurrentState.LogicUpdate();
+        StateMachine.CurrentState?.LogicUpdate();
 
         var pos = transform.position;
         Debug.DrawLine(pos, pos + (Vector3.right * FacingDirection), Color.red);
@@ -108,7 +108,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        StateMachine.CurrentState.PhysicsUpdate();
+        StateMachine.CurrentState?.PhysicsUpdate();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
