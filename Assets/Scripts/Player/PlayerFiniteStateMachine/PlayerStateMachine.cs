@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerStateMachine
 {
@@ -13,7 +16,15 @@ public class PlayerStateMachine
     {
         if (newState == null) return;
 
+        if (CurrentState == null)
+        {
+            Initialize(newState);
+            return;
+        }
+
         UIManager.DebugUI.OnStateChange(newState);
+
+        Debug.Log($"{CurrentState.GetType().Name} -> {newState.GetType().Name}");
 
         CurrentState.Exit();
         CurrentState = newState;

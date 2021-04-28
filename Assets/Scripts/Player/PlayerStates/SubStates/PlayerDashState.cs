@@ -28,15 +28,17 @@ public class PlayerDashState : PlayerAbilityState
     {
         base.Enter();
 
-        player.Trail.emitting = playerData.hasTrail;
-
-        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.dashSfxVolume);
         CanDash = false;
-        lastDashTime = Time.time;
         player.InputHandler.UseDashInput();
-        player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
+        lastDashTime = Time.time;
 
+        player.Trail.emitting = playerData.hasTrail;
+        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.dashSfxVolume);
         ProCamera2DShake.Instance.Shake("GunShot");
+
+        player.CheckIfShouldFlip(player.InputHandler.NormInputX);
+
+        player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
         if (playerData.hasAfterImage) PlaceAfterImage();
     }

@@ -18,10 +18,15 @@ public class PlayerLandState : PlayerGroundedState
         {
             stateMachine.ChangeState(player.MoveState);
         }
-        else
-        {
-            stateMachine.ChangeState(player.IdleState);
-        }
+    }
+
+    public override void AnimationFinishTrigger()
+    {
+        base.AnimationFinishTrigger();
+
+        isExitingState = true;
+
+        stateMachine.ChangeState(player.IdleState);
     }
 
 }

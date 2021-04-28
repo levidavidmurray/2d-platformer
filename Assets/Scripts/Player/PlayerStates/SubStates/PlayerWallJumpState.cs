@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerWallJumpState : PlayerAbilityState
 {
     private int wallJumpDirection;
+    private bool dashInput;
 
     public PlayerWallJumpState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -25,9 +26,16 @@ public class PlayerWallJumpState : PlayerAbilityState
     {
         base.LogicUpdate();
 
+        dashInput = player.InputHandler.DashInput;
+        player.DashState.CheckDashCooldown();
+
         player.Anim.SetFloat("yVelocity", player.CurrentVelocity.y);
         player.Anim.SetFloat("xVelocity", Mathf.Abs(player.CurrentVelocity.x));
 
+        if (dashInput && player.DashState.CanDash)
+        {
+            stateMachine.ChangeState(player.DashState);
+        }
         if (Time.time - startTime >= playerData.wallJumpTime)
         {
             isAbilityDone = true;

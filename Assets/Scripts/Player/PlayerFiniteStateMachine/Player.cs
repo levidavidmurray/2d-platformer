@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     public PlayerWallClimbState WallClimbState { get; private set; }
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerLedgeClimbState LedgeClimbState { get; private set; }
-    public PlayerDeadState DeadState { get; private set; }
+    public PlayerDeathState DeathState { get; private set; }
 
     [SerializeField]
     private PlayerData playerData;
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
         WallGrabState = new PlayerWallGrabState(this, StateMachine, playerData, "wallGrab");
         WallClimbState = new PlayerWallClimbState(this, StateMachine, playerData, "wallClimb");
         WallJumpState = new PlayerWallJumpState(this, StateMachine, playerData, "inAir");
-        DeadState = new PlayerDeadState(this, StateMachine, playerData, "idle");
+        DeathState = new PlayerDeathState(this, StateMachine, playerData, "idle");
 
         // LedgeClimbState = new PlayerLedgeClimbState(this, StateMachine, playerData, "ledgeClimbState");
     }
@@ -89,8 +89,11 @@ public class Player : MonoBehaviour
         Trail.emitting = false;
 
         FacingDirection = 1;
+        Sprite.forceRenderingOff = true;
 
-        StateMachine.Initialize(IdleState);
+        LeanTween.delayedCall(playerData.respawnDelay, () => {
+            DeathState.SpawnPlayer();
+        });
     }
 
     private void Update()
@@ -98,6 +101,9 @@ public class Player : MonoBehaviour
         CurrentVelocity = RB.velocity;
         UIManager.DebugUI.OnPlayerVelocityChange(CurrentVelocity);
         StateMachine.CurrentState.LogicUpdate();
+
+        var pos = transform.position;
+        Debug.DrawLine(pos, pos + (Vector3.right * FacingDirection), Color.red);
     }
 
     private void FixedUpdate()
@@ -113,7 +119,7 @@ public class Player : MonoBehaviour
                 StateMachine.CurrentState.Die();
                 break;
             case GameTrigger.SPAWN_POINT:
-                spawnPoint = col.transform;
+                spawnPoint = col.gameObject.GetComponent<RespawnPointTrigger>().SpawnPoint;
                 break;
         }
     }

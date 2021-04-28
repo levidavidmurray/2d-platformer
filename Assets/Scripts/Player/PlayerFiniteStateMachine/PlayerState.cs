@@ -29,7 +29,8 @@ public class PlayerState
 
     public virtual void Die()
     {
-        stateMachine.ChangeState(player.DeadState);
+        isExitingState = true;
+        stateMachine.ChangeState(player.DeathState);
     }
 
     // Enter State

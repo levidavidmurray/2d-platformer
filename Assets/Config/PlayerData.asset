@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0df896a85430aa8468f602bad15e3c52, type: 3}
-  m_Name: newPlayerData
+  m_Name: PlayerData
   m_EditorClassIdentifier: 
   movementVelocity: 4.5
   jumpVelocity: 15
@@ -39,10 +39,14 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  deathColliderKillDelay: 0.02
   deathResetDelay: 0.9
   deathResetTransitionDuration: 0.75
   deathResetTransitionHoldTime: 0.75
   deathResetTransitionDelay: 0.25
-  respawnDelay: 3
+  respawnDelay: 2.25
+  spawnScaleDuration: 0.75
+  spawnDuration: 0.05
   deathParticlesPrefab: {fileID: 4219996338740997663, guid: 242baa73e1500db42befeb11b4d535d1, type: 3}
   deathParticlesOffset: {x: 0, y: 0}
+  deathSfxVolume: 0.65
