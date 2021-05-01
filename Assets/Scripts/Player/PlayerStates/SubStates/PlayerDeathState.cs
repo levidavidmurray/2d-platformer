@@ -25,6 +25,11 @@ public class PlayerDeathState : PlayerState
 
             player.Sprite.forceRenderingOff = true;
             player.RB.simulated = false;
+            
+            LeanTween.value(playerData.playerLightIntensity, 0f, playerData.playerLightFadeTime)
+                .setOnUpdate((float value) => {
+                    player.Light.intensity = value;
+                });
 
             ProCamera2DShake.Instance.Shake("PlayerHit");
             MasterAudio.PlaySoundAndForget("sfx_death", playerData.deathSfxVolume);
@@ -67,6 +72,11 @@ public class PlayerDeathState : PlayerState
         player.transform.localScale = Vector3.zero;
         player.RB.simulated = false;
         player.Sprite.forceRenderingOff = false;
+
+        LeanTween.value(0f, playerData.playerLightIntensity, playerData.playerLightFadeTime)
+            .setOnUpdate((float value) => {
+                player.Light.intensity = value;
+            });
 
         player.transform.LeanScale(Vector3.one, playerData.spawnScaleDuration)
             .setEase(LeanTweenType.easeSpring)

@@ -15,6 +15,8 @@ public class PlayerDashState : PlayerAbilityState
     private float lastDashTime;
     private Vector2 lastAfterImagePos;
 
+    private int lastPitchIndex;
+
     public PlayerDashState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
@@ -33,11 +35,33 @@ public class PlayerDashState : PlayerAbilityState
         lastDashTime = Time.time;
 
         player.Trail.emitting = playerData.hasTrail;
-        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.dashSfxVolume);
+
+        float dashPitch = playerData.dashPitch;
+
+        if (!playerData.useDashPitch)
+        {
+            int pitchIndex = lastPitchIndex;
+            int attempts = 0;
+            while (pitchIndex == lastPitchIndex && attempts < 3)
+            {
+                pitchIndex = Random.Range(0, playerData.dashPitchVariants.Length);
+                attempts++;
+            }
+            lastPitchIndex = pitchIndex;
+            dashPitch = playerData.dashPitchVariants[pitchIndex];
+        }
+
+
+        MasterAudio.PlaySoundAndForget("sfx_current", playerData.trackSfxVolume, dashPitch);
+
+        player.TrackEffects.Enable();
+        player.gameObject.LeanScale(playerData.dashScale * Vector3.one, playerData.dashScaleTime);
+
         ProCamera2DShake.Instance.Shake("GunShot");
 
         player.CheckIfShouldFlip(player.InputHandler.NormInputX);
 
+        player.RBFreezeY();
         player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
         if (playerData.hasAfterImage) PlaceAfterImage();
@@ -48,6 +72,12 @@ public class PlayerDashState : PlayerAbilityState
         base.Exit();
 
         player.Trail.emitting = false;
+        player.RBResume();
+        LeanTween.delayedCall(playerData.dashExitScaleDelay, () => {
+            player.gameObject.LeanScale(Vector3.one, playerData.dashScaleTime);
+            player.TrackEffects.Disable();
+        });
+        MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
     }
 
     public override void LogicUpdate()
@@ -57,12 +87,15 @@ public class PlayerDashState : PlayerAbilityState
         xInput = player.InputHandler.NormInputX;
         yInput = player.InputHandler.NormInputY;
 
-        player.SetVelocityY(0f);
         CheckIfShouldPlaceAfterImage();
 
         if (Time.time - lastDashTime >= playerData.dashTime)
         {
             this.EndDash();
+        }
+        else if (Time.time - lastDashTime >= playerData.dashTime / 2)
+        {
+            MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
         }
         else if (xInput != 0 && xInput != player.FacingDirection)
         {
@@ -110,5 +143,6 @@ public class PlayerDashState : PlayerAbilityState
         player.SetVelocityX(0);
         isAbilityDone = true;
         player.Trail.emitting = false;
+        player.RBResume();
     }
 }

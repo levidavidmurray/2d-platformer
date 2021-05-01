@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public static class GameTrigger
 {
     public const string DEATH_COLLIDER = "DeathCollider";
     public const string SPAWN_POINT = "SpawnPoint";
+    public const string TRACK_ENTER = "TrackEnter";
 }
 
 public class Player : MonoBehaviour
@@ -26,6 +28,7 @@ public class Player : MonoBehaviour
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerLedgeClimbState LedgeClimbState { get; private set; }
     public PlayerDeathState DeathState { get; private set; }
+    public PlayerTrackState TrackState { get; private set; }
 
     [SerializeField]
     private PlayerData playerData;
@@ -37,6 +40,8 @@ public class Player : MonoBehaviour
     public Rigidbody2D RB { get; private set; }
     public SpriteRenderer Sprite { get; private set; }
     public TrailRenderer Trail { get; private set; }
+    public Light2D Light { get; private set; }
+    public PlayerTrackEffects TrackEffects { get; private set; }
     #endregion
 
     #region Other Variables
@@ -62,7 +67,7 @@ public class Player : MonoBehaviour
     #region Unity Callbacks
     private void Awake()
     {
-        StateMachine = new PlayerStateMachine();
+        StateMachine = new PlayerStateMachine(playerData.logStateTransition);
         IdleState = new PlayerIdleState(this, StateMachine, playerData, "idle");
         MoveState = new PlayerMoveState(this, StateMachine, playerData, "move");
         JumpState = new PlayerJumpState(this, StateMachine, playerData, "inAir");
@@ -74,6 +79,7 @@ public class Player : MonoBehaviour
         WallClimbState = new PlayerWallClimbState(this, StateMachine, playerData, "wallClimb");
         WallJumpState = new PlayerWallJumpState(this, StateMachine, playerData, "inAir");
         DeathState = new PlayerDeathState(this, StateMachine, playerData, "idle");
+        TrackState = new PlayerTrackState(this, StateMachine, playerData, "idle");
 
         // LedgeClimbState = new PlayerLedgeClimbState(this, StateMachine, playerData, "ledgeClimbState");
     }
@@ -85,13 +91,18 @@ public class Player : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         Sprite = GetComponent<SpriteRenderer>();
         Trail = GetComponentInChildren<TrailRenderer>();
+        Light = GetComponentInChildren<Light2D>();
+        TrackEffects = GetComponentInChildren<PlayerTrackEffects>();
+
+        TrackEffects.Disable();
 
         Trail.emitting = false;
 
         FacingDirection = 1;
         Sprite.forceRenderingOff = true;
+        Light.intensity = 0;
 
-        LeanTween.delayedCall(playerData.respawnDelay, () => {
+        LeanTween.delayedCall(playerData.deathResetDelay, () => {
             DeathState.SpawnPlayer();
         });
     }
@@ -101,6 +112,12 @@ public class Player : MonoBehaviour
         CurrentVelocity = RB.velocity;
         UIManager.DebugUI.OnPlayerVelocityChange(CurrentVelocity);
         StateMachine.CurrentState?.LogicUpdate();
+
+        // TODO: Remove (only for dev debugging)
+        if (InputHandler.GrabInput) {
+            StateMachine.CurrentState.Exit();
+            DeathState.SpawnPlayer();            
+        }
 
         var pos = transform.position;
         Debug.DrawLine(pos, pos + (Vector3.right * FacingDirection), Color.red);
@@ -121,6 +138,10 @@ public class Player : MonoBehaviour
             case GameTrigger.SPAWN_POINT:
                 spawnPoint = col.gameObject.GetComponent<RespawnPointTrigger>().SpawnPoint;
                 break;
+            case GameTrigger.TRACK_ENTER:
+                if (TrackState.CanEnterTrack(col))
+                    StateMachine.ChangeState(TrackState);
+                break;
         }
     }
 
@@ -132,6 +153,26 @@ public class Player : MonoBehaviour
     {
         RB.velocity = Vector2.zero;
         CurrentVelocity = Vector2.zero;
+    }
+
+    public void RBResume()
+    {
+        RB.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
+    }
+
+    public void RBFreeze()
+    {
+        RB.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation;
+    }
+
+    public void RBFreezeX()
+    {
+        RB.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+    }
+
+    public void RBFreezeY()
+    {
+        RB.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
 
     public void SetVelocity(float velocity, Vector2 angle, int direction)

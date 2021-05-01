@@ -6,6 +6,13 @@ public class PlayerStateMachine
 {
     public PlayerState CurrentState { get; private set; }
 
+    private bool logStateTransition;
+
+    public PlayerStateMachine(bool logStateTransition)
+    {
+        this.logStateTransition = logStateTransition;
+    }
+
     public void Initialize(PlayerState startingState)
     {
         CurrentState = startingState;
@@ -24,7 +31,10 @@ public class PlayerStateMachine
 
         UIManager.DebugUI.OnStateChange(newState);
 
-        Debug.Log($"{CurrentState.GetType().Name} -> {newState.GetType().Name}");
+        if (logStateTransition)
+        {
+            Debug.Log($"{CurrentState.GetType().Name} -> {newState.GetType().Name}");
+        }
 
         CurrentState.Exit();
         CurrentState = newState;

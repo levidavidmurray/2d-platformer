@@ -5,6 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "newPlayerData", menuName = "Data/Player Data/Base Data")]
 public class PlayerData : ScriptableObject
 {
+    [Header("Debug Config")]
+    public bool logStateTransition = false;
+    public bool useDashPitch = false;
+
     [Header("Move State")]
     public float movementVelocity = 10f;
 
@@ -21,6 +25,11 @@ public class PlayerData : ScriptableObject
     public float distBetweenAfterImages = 0.5f;
     public float afterImageAlphaSet = 0.8f;
     public float afterImageAlphaDecay = 0.85f;
+    public float dashScale = 0.1f;
+    public float dashScaleTime = 0.2f;
+    public float dashExitScaleDelay = 0.2f;
+    public float dashPitch = 1f;
+    public float[] dashPitchVariants = new[] {1.1f, 1.2f, 1.3f, 1.4f};
     [Header("Dash SFX")]
     public float dashDelayForSfx = 0.2f;
     public float dashSfxVolume = 0.65f;
@@ -44,6 +53,21 @@ public class PlayerData : ScriptableObject
     public Vector2 startOffset;
     public Vector2 stopOffset;
 
+    [Header("Track State")]
+    public float trackVelocity = 16f;
+    public Vector2 trackExitForce = new Vector2(0f, 16f);
+    public float trackEffectsDisableDelay = 0.1f;
+    public Vector3 trackPlayerScale = new Vector3(0.1f, 0.1f, 0.1f);
+    public float trackPlayerExitScaleTime = 0.2f;
+    public float trackPlayerExitScaleDelay = 0.2f;
+    public float trackPlayerEnterScaleTime = 0.2f;
+    public float trackSfxFadeExitTime = 0.5f; // Ms before exiting track to fade sfx
+    public float trackSfxFadeTime = 0.4f;
+    public float trackSfxVolume = 0.5f;
+    public float trackSfxPitch = 1f;
+    public float trackEnterCooldown = 0.1f;
+    public float trackHorizontalExitGravityDelay = 0.15f;
+
     [Header("Check Variables")]
     public float groundCheckRadius = 0.3f;
     public float wallCheckDistance = 0.5f;
@@ -61,4 +85,6 @@ public class PlayerData : ScriptableObject
     public GameObject deathParticlesPrefab;
     public Vector2 deathParticlesOffset;
     public float deathSfxVolume = 0.65f;
+    public float playerLightFadeTime = 0.3f;
+    public float playerLightIntensity = 0.45f;
 }
