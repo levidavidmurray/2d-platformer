@@ -12,6 +12,10 @@ public class PlayerDashState : PlayerAbilityState
     private int xInput;
     private int yInput;
 
+    private bool isTouchingWall = false;
+    private int enterScaleTweenId;
+    private int exitScaleTweenId;
+
     private float lastDashTime;
     private Vector2 lastAfterImagePos;
 
@@ -24,6 +28,8 @@ public class PlayerDashState : PlayerAbilityState
     public override void DoChecks()
     {
         base.DoChecks();
+
+        isTouchingWall = player.CheckIfTouchingWall();
     }
 
     public override void Enter()
@@ -51,11 +57,12 @@ public class PlayerDashState : PlayerAbilityState
             dashPitch = playerData.dashPitchVariants[pitchIndex];
         }
 
+        LeanTween.cancel(exitScaleTweenId);
 
         MasterAudio.PlaySoundAndForget("sfx_current", playerData.trackSfxVolume, dashPitch);
 
         player.TrackEffects.Enable();
-        player.gameObject.LeanScale(playerData.dashScale * Vector3.one, playerData.dashScaleTime);
+        enterScaleTweenId = player.gameObject.LeanScale(playerData.dashScale * Vector3.one, playerData.dashScaleTime).id;
 
         ProCamera2DShake.Instance.Shake("GunShot");
 
@@ -71,12 +78,14 @@ public class PlayerDashState : PlayerAbilityState
     {
         base.Exit();
 
+        LeanTween.cancel(enterScaleTweenId);
+
         player.Trail.emitting = false;
         player.RBResume();
-        LeanTween.delayedCall(playerData.dashExitScaleDelay, () => {
-            player.gameObject.LeanScale(Vector3.one, playerData.dashScaleTime);
+        exitScaleTweenId = LeanTween.delayedCall(playerData.dashExitScaleDelay, () => {
+            exitScaleTweenId = player.gameObject.LeanScale(Vector3.one, playerData.dashScaleTime).id;
             player.TrackEffects.Disable();
-        });
+        }).id;
         MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
     }
 
@@ -88,6 +97,11 @@ public class PlayerDashState : PlayerAbilityState
         yInput = player.InputHandler.NormInputY;
 
         CheckIfShouldPlaceAfterImage();
+
+        if (isTouchingWall)
+        {
+            this.EndDash();
+        }
 
         if (Time.time - lastDashTime >= playerData.dashTime)
         {
@@ -140,6 +154,7 @@ public class PlayerDashState : PlayerAbilityState
 
     private void EndDash()
     {
+        LeanTween.cancel(enterScaleTweenId);
         player.SetVelocityX(0);
         isAbilityDone = true;
         player.Trail.emitting = false;
