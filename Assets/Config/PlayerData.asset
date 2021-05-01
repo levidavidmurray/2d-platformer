@@ -18,8 +18,8 @@ MonoBehaviour:
   jumpVelocity: 15
   amountOfJumps: 1
   numOfDashes: 2
-  dashVelocity: 30
-  dashTime: 0.15
+  dashVelocity: {x: 30, y: 30}
+  dashTime: {x: 0.15, y: 0.08}
   dashCooldown: 0.2
   hasAfterImage: 0
   hasTrail: 0

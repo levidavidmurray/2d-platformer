@@ -18,8 +18,8 @@ public class PlayerData : ScriptableObject
 
     [Header("Dash State")]
     public int numOfDashes = 1;
-    public float dashVelocity = 20f;
-    public float dashTime = 0.5f;
+    public Vector2 dashVelocity = new Vector2(30f, 30f);
+    public Vector2 dashTime = new Vector2(0.15f, 0.08f);
     public float dashCooldown = 0.5f;
     public bool hasAfterImage = true;
     public bool hasTrail = true;

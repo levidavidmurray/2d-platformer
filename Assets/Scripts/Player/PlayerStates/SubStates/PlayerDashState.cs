@@ -29,6 +29,7 @@ public class PlayerDashState : PlayerAbilityState
 
     private int numOfDashesLeft;
 
+    private float dashTime;
     private float lastDashTime;
     private Vector2 lastAfterImagePos;
 
@@ -61,7 +62,6 @@ public class PlayerDashState : PlayerAbilityState
         Vector2 snappedInput = player.InputHandler.SnappedMovementInput;
 
         dashDirection = FindDashDirection(snappedInput);
-        Debug.Log($"{snappedInput}, direction: {dashDirection}");
 
         LeanTween.cancel(exitScaleTweenId);
 
@@ -79,12 +79,26 @@ public class PlayerDashState : PlayerAbilityState
             snappedInput = Vector2.right * player.FacingDirection;
         }
 
-        if (snappedInput == Vector2.right || snappedInput == Vector2.left)
+        float dashVelocity = playerData.dashVelocity.x;
+        dashTime = playerData.dashTime.x;
+
+        if (dashDirection == DashDirection.EAST || dashDirection == DashDirection.WEST)
         {
             player.RBFreezeY();
         }
+        else if (dashDirection == DashDirection.NORTH || dashDirection == DashDirection.SOUTH)
+        {
+            dashVelocity = playerData.dashVelocity.y;
+            dashTime = playerData.dashTime.y;
+        }
+        else
+        {
+            // Diagonal direction
+            dashVelocity = (playerData.dashVelocity.x + playerData.dashVelocity.y) / 2;
+            dashTime = (playerData.dashTime.x + playerData.dashTime.y) / 2;
+        }
 
-        player.SetVelocity(playerData.dashVelocity, snappedInput, 1);
+        player.SetVelocity(dashVelocity, snappedInput, 1);
         // player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
         if (playerData.hasAfterImage) PlaceAfterImage();
@@ -119,13 +133,9 @@ public class PlayerDashState : PlayerAbilityState
             this.EndDash();
         }
 
-        if (Time.time - lastDashTime >= playerData.dashTime)
+        if (Time.time - lastDashTime >= dashTime)
         {
             this.EndDash();
-        }
-        else if (Time.time - lastDashTime >= playerData.dashTime / 2)
-        {
-            // MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
         }
         else if (xInput != 0 && xInput != player.FacingDirection)
         {
