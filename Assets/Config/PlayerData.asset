@@ -26,7 +26,7 @@ MonoBehaviour:
   afterImageAlphaSet: 0.49
   afterImageAlphaDecay: 0.68
   dashScale: 0.1
-  dashScaleTime: 0.2
+  dashScaleTime: 0.05
   dashExitScaleDelay: 0.2
   dashPitch: 1
   dashPitchVariants:

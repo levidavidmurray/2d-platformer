@@ -35,6 +35,7 @@ public class PlayerDashState : PlayerAbilityState
     public override void Enter()
     {
         base.Enter();
+        MasterAudio.StopAllOfSound("sfx_dash");
 
         CanDash = false;
         player.InputHandler.UseDashInput();
@@ -59,7 +60,7 @@ public class PlayerDashState : PlayerAbilityState
 
         LeanTween.cancel(exitScaleTweenId);
 
-        MasterAudio.PlaySoundAndForget("sfx_current", playerData.trackSfxVolume, dashPitch);
+        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.trackSfxVolume);
 
         player.TrackEffects.Enable();
         enterScaleTweenId = player.gameObject.LeanScale(playerData.dashScale * Vector3.one, playerData.dashScaleTime).id;
@@ -86,7 +87,7 @@ public class PlayerDashState : PlayerAbilityState
             exitScaleTweenId = player.gameObject.LeanScale(Vector3.one, playerData.dashScaleTime).id;
             player.TrackEffects.Disable();
         }).id;
-        MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
+        // MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
     }
 
     public override void LogicUpdate()
@@ -109,7 +110,7 @@ public class PlayerDashState : PlayerAbilityState
         }
         else if (Time.time - lastDashTime >= playerData.dashTime / 2)
         {
-            MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
+            // MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
         }
         else if (xInput != 0 && xInput != player.FacingDirection)
         {
