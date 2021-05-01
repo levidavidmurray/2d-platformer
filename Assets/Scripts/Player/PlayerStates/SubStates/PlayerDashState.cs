@@ -4,8 +4,21 @@ using UnityEngine;
 using DarkTonic.MasterAudio;
 using Com.LuisPedroFonseca.ProCamera2D;
 
+public enum DashDirection {
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST,
+    NORTH_EAST,
+    SOUTH_EAST,
+    SOUTH_WEST,
+    NORTH_WEST,
+}
+
 public class PlayerDashState : PlayerAbilityState
 {
+
+    public DashDirection dashDirection { get; private set; }
 
     private int xInput;
     private int yInput;
@@ -45,24 +58,14 @@ public class PlayerDashState : PlayerAbilityState
 
         player.Trail.emitting = playerData.hasTrail;
 
-        float dashPitch = playerData.dashPitch;
+        Vector2 snappedInput = player.InputHandler.SnappedMovementInput;
 
-        if (!playerData.useDashPitch)
-        {
-            int pitchIndex = lastPitchIndex;
-            int attempts = 0;
-            while (pitchIndex == lastPitchIndex && attempts < 3)
-            {
-                pitchIndex = Random.Range(0, playerData.dashPitchVariants.Length);
-                attempts++;
-            }
-            lastPitchIndex = pitchIndex;
-            dashPitch = playerData.dashPitchVariants[pitchIndex];
-        }
+        dashDirection = FindDashDirection(snappedInput);
+        Debug.Log($"{snappedInput}, direction: {dashDirection}");
 
         LeanTween.cancel(exitScaleTweenId);
 
-        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.dashSfxVolume);
+        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.dashSfxVolume, FindDashPitch(dashDirection));
 
         player.TrackEffects.Enable();
         enterScaleTweenId = player.gameObject.LeanScale(playerData.dashScale * Vector3.one, playerData.dashScaleTime).id;
@@ -71,19 +74,17 @@ public class PlayerDashState : PlayerAbilityState
 
         player.CheckIfShouldFlip(player.InputHandler.NormInputX);
 
-        Vector2 dashDirection = player.InputHandler.SnappedMovementInput;
-
-        if (dashDirection == Vector2.zero)
+        if (snappedInput == Vector2.zero)
         {
-            dashDirection = Vector2.right * player.FacingDirection;
+            snappedInput = Vector2.right * player.FacingDirection;
         }
 
-        if (dashDirection == Vector2.right || dashDirection == Vector2.left)
+        if (snappedInput == Vector2.right || snappedInput == Vector2.left)
         {
             player.RBFreezeY();
         }
 
-        player.SetVelocity(playerData.dashVelocity, dashDirection, 1);
+        player.SetVelocity(playerData.dashVelocity, snappedInput, 1);
         // player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
         if (playerData.hasAfterImage) PlaceAfterImage();
@@ -168,5 +169,62 @@ public class PlayerDashState : PlayerAbilityState
         isAbilityDone = true;
         player.Trail.emitting = false;
         player.RBResume();
+    }
+
+    private DashDirection FindDashDirection(Vector2 snappedDirectionInput)
+    {
+
+        if (snappedDirectionInput == Vector2.up)
+            return DashDirection.NORTH;
+
+        if (snappedDirectionInput == Vector2.right)
+            return DashDirection.EAST;
+
+        if (snappedDirectionInput == Vector2.down)
+            return DashDirection.SOUTH;
+
+        if (snappedDirectionInput == Vector2.left)
+            return DashDirection.WEST;
+
+        if (snappedDirectionInput.x > 0 && snappedDirectionInput.y > 0)
+            return DashDirection.NORTH_EAST;
+
+        if (snappedDirectionInput.x > 0 && snappedDirectionInput.y < 0)
+            return DashDirection.SOUTH_EAST;
+
+        if (snappedDirectionInput.x < 0 && snappedDirectionInput.y < 0)
+            return DashDirection.SOUTH_WEST;
+
+        if (snappedDirectionInput.x < 0 && snappedDirectionInput.y > 0)
+            return DashDirection.NORTH_WEST;
+
+        // Fallback -- In theory shouldn't happen
+        return DashDirection.EAST;
+    }
+
+    public float FindDashPitch(DashDirection direction)
+    {
+        switch(direction)
+        {
+            case DashDirection.NORTH:
+                return playerData.dashNorthPitch;
+            case DashDirection.EAST:
+                return playerData.dashEastPitch;
+            case DashDirection.SOUTH:
+                return playerData.dashSouthPitch;
+            case DashDirection.WEST:
+                return playerData.dashWestPitch;
+            case DashDirection.NORTH_EAST:
+                return playerData.dashNorthEastPitch;
+            case DashDirection.SOUTH_EAST:
+                return playerData.dashSouthEastPitch;
+            case DashDirection.SOUTH_WEST:
+                return playerData.dashSouthWestPitch;
+            case DashDirection.NORTH_WEST:
+                return playerData.dashNorthWestPitch;
+            default:
+                // Fallback -- In theory shouldn't happen
+                return playerData.dashEastPitch;
+        }
     }
 }

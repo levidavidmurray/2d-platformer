@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df896a85430aa8468f602bad15e3c52, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  logStateTransition: 1
+  logStateTransition: 0
   useDashPitch: 0
   movementVelocity: 5
   jumpVelocity: 15
@@ -32,17 +32,14 @@ MonoBehaviour:
   dashExitGravityDelay: 0.15
   dashDelayForSfx: 0.05
   dashSfxVolume: 0.28
-  dashPitch: 1
-  dashPitchVariants:
-  - 1
-  - 1.25
-  - 1.5
-  - 1.75
-  - 2
-  - 2.25
-  - 2.5
-  - 2.75
-  - 3
+  dashNorthPitch: 1.1225
+  dashNorthEastPitch: 1.0595
+  dashEastPitch: 1
+  dashSouthEastPitch: 0.9439
+  dashSouthPitch: 0.8909
+  dashSouthWestPitch: 0.9439
+  dashWestPitch: 1
+  dashNorthWestPitch: 1.0595
   wallJumpVelocity: 15
   wallJumpTime: 0.2
   wallJumpAngle: {x: 1, y: 1.15}
@@ -84,5 +81,8 @@ MonoBehaviour:
   deathParticlesPrefab: {fileID: 4219996338740997663, guid: 242baa73e1500db42befeb11b4d535d1, type: 3}
   deathParticlesOffset: {x: 0, y: 0}
   deathSfxVolume: 0.65
+  playerLightPingPongIntensityMin: 0.59
+  playerLightPingPongIntensityMax: 1.08
+  playerLightPingPongTime: 0.28
   playerLightFadeTime: 0.3
   playerLightIntensity: 0.45

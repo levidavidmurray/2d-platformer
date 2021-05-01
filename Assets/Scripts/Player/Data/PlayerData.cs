@@ -34,8 +34,14 @@ public class PlayerData : ScriptableObject
     [Header("Dash SFX")]
     public float dashDelayForSfx = 0.2f;
     public float dashSfxVolume = 0.65f;
-    public float dashPitch = 1f;
-    public float[] dashPitchVariants = new[] {1.1f, 1.2f, 1.3f, 1.4f};
+    public float dashNorthPitch = 1f;
+    public float dashNorthEastPitch = 1f;
+    public float dashEastPitch = 1f;
+    public float dashSouthEastPitch = 1f;
+    public float dashSouthPitch = 1f;
+    public float dashSouthWestPitch = 1f;
+    public float dashWestPitch = 1f;
+    public float dashNorthWestPitch = 1f;
 
     [Header("Wall Jump State")]
     public float wallJumpVelocity = 20f;
@@ -91,6 +97,12 @@ public class PlayerData : ScriptableObject
     public GameObject deathParticlesPrefab;
     public Vector2 deathParticlesOffset;
     public float deathSfxVolume = 0.65f;
+
+    [Header("Player Light")]
+    public float playerLightPingPongIntensityMin = 0.38f;
+    public float playerLightPingPongIntensityMax = 0.45f;
+    public float playerLightPingPongTime = 1f;
     public float playerLightFadeTime = 0.3f;
     public float playerLightIntensity = 0.45f;
+
 }

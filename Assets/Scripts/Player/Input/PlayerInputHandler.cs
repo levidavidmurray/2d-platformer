@@ -33,7 +33,6 @@ public class PlayerInputHandler : MonoBehaviour
     {
         RawMovementInput = context.ReadValue<Vector2>();
         SnappedMovementInput = SnapVector2Dir(RawMovementInput);
-        print($"{RawMovementInput}, {SnapVector2Dir(RawMovementInput)}");
 
         NormInputX = Mathf.RoundToInt(RawMovementInput.x);
         NormInputY = Mathf.RoundToInt(RawMovementInput.y);

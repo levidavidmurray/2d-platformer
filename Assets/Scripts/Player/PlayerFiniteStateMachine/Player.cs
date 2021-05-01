@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
-using UnityEngine.SceneManagement;
 
 public static class GameTrigger
 {
@@ -48,9 +47,14 @@ public class Player : MonoBehaviour
     public Vector2 CurrentVelocity { get; private set; }
     public int FacingDirection { get; private set; }
 
-    public Transform spawnPoint;
-
     private Vector2 workspace;
+    public Transform spawnPoint;
+    public int playerLightPingPongTweenId;
+    public int playerLightFadeTweenId;
+
+    private float lightPingPongIntensityMax;
+    private float lightPingPongIntensityMin;
+    private float lightPingPongTime;
     #endregion
 
     #region Check Transforms
@@ -102,6 +106,10 @@ public class Player : MonoBehaviour
         Sprite.forceRenderingOff = true;
         Light.intensity = 0;
 
+        lightPingPongIntensityMin = playerData.playerLightPingPongIntensityMin;
+        lightPingPongIntensityMax = playerData.playerLightPingPongIntensityMax;
+        lightPingPongTime = playerData.playerLightPingPongTime;
+
         LeanTween.delayedCall(playerData.deathResetDelay, () => {
             DeathState.SpawnPlayer();
         });
@@ -118,6 +126,8 @@ public class Player : MonoBehaviour
             StateMachine.CurrentState.Exit();
             DeathState.SpawnPlayer();            
         }
+
+        CheckLightPingPongIntensity();
 
         var pos = transform.position;
         Debug.DrawLine(pos, pos + (Vector3.right * FacingDirection), Color.red);
@@ -228,6 +238,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void CheckLightPingPongIntensity()
+    {
+        if (
+            lightPingPongTime != playerData.playerLightPingPongTime  ||
+            lightPingPongIntensityMin != playerData.playerLightPingPongIntensityMin ||
+            lightPingPongIntensityMax != playerData.playerLightPingPongIntensityMax
+        ) 
+        {
+            lightPingPongTime = playerData.playerLightPingPongTime;
+            lightPingPongIntensityMin = playerData.playerLightPingPongIntensityMin;
+            lightPingPongIntensityMax = playerData.playerLightPingPongIntensityMax;
+
+            StartPingPongLight();
+        }
+    }
+
     #endregion
 
     #region Other Methods
@@ -253,6 +279,48 @@ public class Player : MonoBehaviour
     {
         FacingDirection *= -1;
         transform.Rotate(0.0f, 180.0f, 0.0f);
+    }
+
+    public LTDescr StopPingPongLight(float newIntensity, float fadeTime = -1f)
+    {
+        if (fadeTime < 0)
+        {
+            fadeTime = playerData.playerLightFadeTime;
+        }
+
+        LeanTween.cancel(playerLightPingPongTweenId);
+        LeanTween.cancel(playerLightFadeTweenId);
+        
+        LTDescr tween = LeanTween.value(
+            Light.intensity,
+            newIntensity,
+            fadeTime
+        ).setOnUpdate((float intensity) => {
+            Light.intensity = intensity;
+        });
+
+        playerLightFadeTweenId = tween.id;
+        
+        return tween;
+    }
+
+    public void StartPingPongLight()
+    {
+        LeanTween.cancel(playerLightPingPongTweenId);
+        LeanTween.cancel(playerLightFadeTweenId);
+
+        StopPingPongLight(lightPingPongIntensityMax, playerData.playerLightFadeTime)
+            .setOnComplete(() => {
+                playerLightPingPongTweenId = LeanTween.value(
+                    lightPingPongIntensityMin,
+                    lightPingPongIntensityMax,
+                    lightPingPongTime
+                )
+                .setLoopPingPong()
+                .setOnUpdate((float intensity) => {
+                    Light.intensity = intensity;
+                }).id;
+            });
     }
 
     #endregion
