@@ -39,7 +39,15 @@ public class PlayerTrackState : PlayerAbilityState
         player.JumpState.ResetAmountOfJumpsLeft();
         player.TrackEffects.Enable();
 
-        MasterAudio.PlaySound("sfx_current", playerData.trackSfxVolume, playerData.trackSfxPitch);
+        MasterAudio.StopAllOfSound("sfx_electric_current");
+        MasterAudio.StopAllOfSound("sfx_electric_current_end");
+
+        MasterAudio.PlaySound(
+            "sfx_electric_current", 
+            playerData.trackSfxLoopVolume, 
+            null, 
+            playerData.trackSfxLoopDelay
+        );
 
         LeanTween.scale(player.gameObject, playerData.trackPlayerScale, playerData.trackPlayerEnterScaleTime);
 
@@ -90,7 +98,8 @@ public class PlayerTrackState : PlayerAbilityState
             !sfxFadeStarted)
         {
             Debug.Log($"FADE sfx_current: timeToPoint: {timeToPoint}, timeOnPoint: {timeOnPoint}");
-            MasterAudio.FadeOutAllOfSound("sfx_current", playerData.trackSfxFadeTime);
+            MasterAudio.FadeOutAllOfSound("sfx_electric_current", playerData.trackSfxFadeTime);
+            MasterAudio.PlaySoundAndForget("sfx_electric_current_end", playerData.trackSfxEndVolume);
             sfxFadeStarted = true;
         }
 
@@ -133,6 +142,12 @@ public class PlayerTrackState : PlayerAbilityState
         LeanTween.scale(player.gameObject, Vector3.one, playerData.trackPlayerExitScaleTime)
             .setEase(LeanTweenType.easeSpring)
             .setDelay(playerData.trackPlayerExitScaleDelay);
+
+        if (!sfxFadeStarted)
+        {
+            MasterAudio.FadeOutAllOfSound("sfx_electric_current", playerData.trackSfxFadeTime);
+            MasterAudio.PlaySoundAndForget("sfx_electric_current_end", playerData.trackSfxEndVolume);
+        }
 
         trackExitTime = Time.time;
         timeOnPoint = 0f;

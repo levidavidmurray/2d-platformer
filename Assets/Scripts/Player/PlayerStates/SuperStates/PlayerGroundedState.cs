@@ -36,6 +36,7 @@ public class PlayerGroundedState : PlayerState
     {
         base.Enter();
         player.JumpState.ResetAmountOfJumpsLeft();
+        player.DashState.ResetCanDash();
     }
 
     public override void Exit()
@@ -53,11 +54,8 @@ public class PlayerGroundedState : PlayerState
         grabInput = player.InputHandler.GrabInput;
         dashInput = player.InputHandler.DashInput;
 
-        player.DashState.CheckDashCooldown();
-
         if (jumpInput && player.JumpState.CanJump())
         {
-            player.DashState.ResetCanDash();
             stateMachine.ChangeState(player.JumpState);
         }
         else if (dashInput && player.DashState.CanDash)
@@ -66,7 +64,6 @@ public class PlayerGroundedState : PlayerState
         }
         else if (!isGrounded)
         {
-            player.DashState.ResetCanDash();
             player.InAirState.StartCoyoteTime();
             stateMachine.ChangeState(player.InAirState);
         }

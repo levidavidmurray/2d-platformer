@@ -27,10 +27,8 @@ public class PlayerWallJumpState : PlayerAbilityState
         base.LogicUpdate();
 
         dashInput = player.InputHandler.DashInput;
-        player.DashState.CheckDashCooldown();
 
         player.Anim.SetFloat("yVelocity", player.CurrentVelocity.y);
-        player.Anim.SetFloat("xVelocity", Mathf.Abs(player.CurrentVelocity.x));
 
         if (dashInput && player.DashState.CanDash)
         {

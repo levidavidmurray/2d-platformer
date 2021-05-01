@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df896a85430aa8468f602bad15e3c52, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  logStateTransition: 0
+  logStateTransition: 1
   useDashPitch: 0
-  movementVelocity: 4.5
+  movementVelocity: 5
   jumpVelocity: 15
   amountOfJumps: 1
+  numOfDashes: 2
   dashVelocity: 30
-  dashTime: 0.1
-  dashCooldown: 0.5
+  dashTime: 0.15
+  dashCooldown: 0.2
   hasAfterImage: 0
   hasTrail: 0
   distBetweenAfterImages: 0.31
@@ -28,6 +29,9 @@ MonoBehaviour:
   dashScale: 0.1
   dashScaleTime: 0.05
   dashExitScaleDelay: 0.2
+  dashExitGravityDelay: 0.15
+  dashDelayForSfx: 0.05
+  dashSfxVolume: 0.28
   dashPitch: 1
   dashPitchVariants:
   - 1
@@ -39,8 +43,6 @@ MonoBehaviour:
   - 2.5
   - 2.75
   - 3
-  dashDelayForSfx: 0.05
-  dashSfxVolume: 0.28
   wallJumpVelocity: 15
   wallJumpTime: 0.2
   wallJumpAngle: {x: 1, y: 1.15}
@@ -57,10 +59,13 @@ MonoBehaviour:
   trackPlayerExitScaleTime: 0.2
   trackPlayerExitScaleDelay: 0.1
   trackPlayerEnterScaleTime: 0.1
-  trackSfxFadeExitTime: 0.1
+  trackSfxFadeExitTime: 1
   trackSfxFadeTime: 0.1
-  trackSfxVolume: 0.5
+  trackSfxLoopVolume: 1
+  trackSfxStartVolume: 0
+  trackSfxEndVolume: 1
   trackSfxPitch: 1
+  trackSfxLoopDelay: 0
   trackEnterCooldown: 0.41
   trackHorizontalExitGravityDelay: 0.15
   groundCheckRadius: 0.2

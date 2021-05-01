@@ -7,14 +7,14 @@ using Com.LuisPedroFonseca.ProCamera2D;
 public class PlayerDashState : PlayerAbilityState
 {
 
-    public bool CanDash { get; private set; }
-
     private int xInput;
     private int yInput;
 
     private bool isTouchingWall = false;
     private int enterScaleTweenId;
     private int exitScaleTweenId;
+
+    private int numOfDashesLeft;
 
     private float lastDashTime;
     private Vector2 lastAfterImagePos;
@@ -23,6 +23,7 @@ public class PlayerDashState : PlayerAbilityState
 
     public PlayerDashState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
+        numOfDashesLeft = playerData.numOfDashes;
     }
 
     public override void DoChecks()
@@ -37,7 +38,8 @@ public class PlayerDashState : PlayerAbilityState
         base.Enter();
         MasterAudio.StopAllOfSound("sfx_dash");
 
-        CanDash = false;
+        numOfDashesLeft--;
+
         player.InputHandler.UseDashInput();
         lastDashTime = Time.time;
 
@@ -60,7 +62,7 @@ public class PlayerDashState : PlayerAbilityState
 
         LeanTween.cancel(exitScaleTweenId);
 
-        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.trackSfxVolume);
+        MasterAudio.PlaySoundAndForget("sfx_dash", playerData.dashSfxVolume);
 
         player.TrackEffects.Enable();
         enterScaleTweenId = player.gameObject.LeanScale(playerData.dashScale * Vector3.one, playerData.dashScaleTime).id;
@@ -69,8 +71,20 @@ public class PlayerDashState : PlayerAbilityState
 
         player.CheckIfShouldFlip(player.InputHandler.NormInputX);
 
-        player.RBFreezeY();
-        player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
+        Vector2 dashDirection = player.InputHandler.SnappedMovementInput;
+
+        if (dashDirection == Vector2.zero)
+        {
+            dashDirection = Vector2.right * player.FacingDirection;
+        }
+
+        if (dashDirection == Vector2.right || dashDirection == Vector2.left)
+        {
+            player.RBFreezeY();
+        }
+
+        player.SetVelocity(playerData.dashVelocity, dashDirection, 1);
+        // player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
         if (playerData.hasAfterImage) PlaceAfterImage();
     }
@@ -116,10 +130,6 @@ public class PlayerDashState : PlayerAbilityState
         {
             this.EndDash();
         }
-        else if (yInput == -1)
-        {
-            this.EndDash();
-        }
     }
 
     private void CheckIfShouldPlaceAfterImage()
@@ -143,20 +153,18 @@ public class PlayerDashState : PlayerAbilityState
         lastAfterImagePos = player.transform.position;
     }
 
-    public void CheckDashCooldown()
-    {
-        if (Time.time - lastDashTime >= playerData.dashCooldown)
-        {
-            CanDash = true;
+    public bool CanDash {
+        get {
+            return Time.time - lastDashTime >= playerData.dashCooldown && numOfDashesLeft > 0;
         }
     }
 
-    public void ResetCanDash() => CanDash = true;
+    public void ResetCanDash() => numOfDashesLeft = playerData.numOfDashes;
 
     private void EndDash()
     {
         LeanTween.cancel(enterScaleTweenId);
-        player.SetVelocityX(0);
+        player.FreezeVelocity();
         isAbilityDone = true;
         player.Trail.emitting = false;
         player.RBResume();

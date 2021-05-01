@@ -17,6 +17,7 @@ public class PlayerData : ScriptableObject
     public int amountOfJumps = 2;
 
     [Header("Dash State")]
+    public int numOfDashes = 1;
     public float dashVelocity = 20f;
     public float dashTime = 0.5f;
     public float dashCooldown = 0.5f;
@@ -28,11 +29,13 @@ public class PlayerData : ScriptableObject
     public float dashScale = 0.1f;
     public float dashScaleTime = 0.2f;
     public float dashExitScaleDelay = 0.2f;
-    public float dashPitch = 1f;
-    public float[] dashPitchVariants = new[] {1.1f, 1.2f, 1.3f, 1.4f};
+    public float dashExitGravityDelay = 0.15f;
+
     [Header("Dash SFX")]
     public float dashDelayForSfx = 0.2f;
     public float dashSfxVolume = 0.65f;
+    public float dashPitch = 1f;
+    public float[] dashPitchVariants = new[] {1.1f, 1.2f, 1.3f, 1.4f};
 
     [Header("Wall Jump State")]
     public float wallJumpVelocity = 20f;
@@ -63,8 +66,11 @@ public class PlayerData : ScriptableObject
     public float trackPlayerEnterScaleTime = 0.2f;
     public float trackSfxFadeExitTime = 0.5f; // Ms before exiting track to fade sfx
     public float trackSfxFadeTime = 0.4f;
-    public float trackSfxVolume = 0.5f;
+    public float trackSfxLoopVolume = 0.5f;
+    public float trackSfxStartVolume = 0.5f;
+    public float trackSfxEndVolume = 0.5f;
     public float trackSfxPitch = 1f;
+    public float trackSfxLoopDelay = 0.1f;
     public float trackEnterCooldown = 0.1f;
     public float trackHorizontalExitGravityDelay = 0.15f;
 
