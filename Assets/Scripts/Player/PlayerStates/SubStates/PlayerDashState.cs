@@ -19,9 +19,12 @@ public class PlayerDashState : PlayerAbilityState
 {
 
     public DashDirection dashDirection { get; private set; }
+    public Vector2 dashInputDirection;
 
     private int xInput;
     private int yInput;
+    private bool dashInput;
+    private bool dashInputStop;
 
     private bool isTouchingWall = false;
     private int enterScaleTweenId;
@@ -44,7 +47,7 @@ public class PlayerDashState : PlayerAbilityState
     {
         base.DoChecks();
 
-        isTouchingWall = player.CheckIfTouchingWall();
+        isTouchingWall = player.CheckIfTouchingWall(dashInputDirection);
     }
 
     public override void Enter()
@@ -53,15 +56,14 @@ public class PlayerDashState : PlayerAbilityState
         MasterAudio.StopAllOfSound("sfx_dash");
 
         numOfDashesLeft--;
-
         player.InputHandler.UseDashInput();
         lastDashTime = Time.time;
 
         player.Trail.emitting = playerData.hasTrail;
 
-        Vector2 snappedInput = player.InputHandler.SnappedMovementInput;
+        dashInputDirection = player.InputHandler.SnappedMovementInput;
 
-        dashDirection = FindDashDirection(snappedInput);
+        dashDirection = FindDashDirection(dashInputDirection);
 
         LeanTween.cancel(exitScaleTweenId);
 
@@ -74,9 +76,9 @@ public class PlayerDashState : PlayerAbilityState
 
         player.CheckIfShouldFlip(player.InputHandler.NormInputX);
 
-        if (snappedInput == Vector2.zero)
+        if (dashInputDirection == Vector2.zero)
         {
-            snappedInput = Vector2.right * player.FacingDirection;
+            dashInputDirection = Vector2.right * player.FacingDirection;
         }
 
         float dashVelocity = playerData.dashVelocity.x;
@@ -98,7 +100,7 @@ public class PlayerDashState : PlayerAbilityState
             dashTime = (playerData.dashTime.x + playerData.dashTime.y) / 2;
         }
 
-        player.SetVelocity(dashVelocity, snappedInput, 1);
+        player.SetVelocity(dashVelocity, dashInputDirection, 1);
         // player.SetVelocityX(playerData.dashVelocity * player.FacingDirection);
 
         if (playerData.hasAfterImage) PlaceAfterImage();
@@ -125,15 +127,16 @@ public class PlayerDashState : PlayerAbilityState
 
         xInput = player.InputHandler.NormInputX;
         yInput = player.InputHandler.NormInputY;
+        dashInput = player.InputHandler.DashInput;
+        dashInputStop = player.InputHandler.DashInputStop;
 
         CheckIfShouldPlaceAfterImage();
 
-        if (isTouchingWall)
+        if (dashInputStop || isTouchingWall)
         {
             this.EndDash();
         }
-
-        if (Time.time - lastDashTime >= dashTime)
+        else if (Time.time - lastDashTime >= dashTime)
         {
             this.EndDash();
         }

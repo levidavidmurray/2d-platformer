@@ -131,6 +131,7 @@ public class Player : MonoBehaviour
 
         var pos = transform.position;
         Debug.DrawLine(pos, pos + (Vector3.right * FacingDirection), Color.red);
+        Debug.DrawLine(pos, pos + ((Vector3)InputHandler.SnappedMovementInput), Color.green);
     }
 
     private void FixedUpdate()
@@ -215,9 +216,14 @@ public class Player : MonoBehaviour
         return Physics2D.OverlapCircle(groundCheck.position, playerData.groundCheckRadius, playerData.groundLayer);
     }
 
+    public bool CheckIfTouchingWall(Vector2 direction)
+    {
+        return Physics2D.Raycast(wallCheck.position, direction, playerData.wallCheckDistance, playerData.groundLayer);
+    }
+
     public bool CheckIfTouchingWall()
     {
-        return Physics2D.Raycast(wallCheck.position, Vector2.right * FacingDirection, playerData.wallCheckDistance, playerData.groundLayer);
+        return CheckIfTouchingWall(Vector2.right * FacingDirection);
     }
 
     public bool CheckIfTouchingWallBack()
